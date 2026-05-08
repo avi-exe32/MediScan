@@ -2887,6 +2887,21 @@
                         aiDiv.innerText = data.follow_up_questions[0];
                         chatBox.appendChild(aiDiv);
                         chatBox.scrollTop = chatBox.scrollHeight;
+                        
+                        // Show dynamic suggestion chips based on the follow-up question
+                        const chipsContainer = document.getElementById('suggestion-chips');
+                        chipsContainer.innerHTML = ''; // Clear existing chips
+                        
+                        if (data.suggested_answers && data.suggested_answers.length > 0) {
+                            data.suggested_answers.forEach(answer => {
+                                const chipBtn = document.createElement('button');
+                                chipBtn.className = 'chip-btn';
+                                chipBtn.innerText = answer;
+                                chipBtn.onclick = () => sendIntakeMessage(answer);
+                                chipsContainer.appendChild(chipBtn);
+                            });
+                            chipsContainer.style.display = 'flex';
+                        }
                     } else {
                         // Max 2 messages reached - show confirmation and button
                         const confirmDiv = document.createElement('div');
@@ -3108,45 +3123,82 @@
             formData.append('family_history', familyVal);
 
             try {
-                // Wait 1 second before showing step 1 as done and activating step 2
-                setTimeout(() => {
-                    setStepDone('step-1-agent', "Agent 1 Processing — Extracting visual features...");
-                    setStepActive('step-2-agent', "Agent 2 Processing — Generating clinical report...");
-                }, 1000);
-                
-                // Activate step 3 shortly after
-                setTimeout(() => {
-                    setStepActive('step-3-agent', "Agent 3 Processing — Validating report...");
-                }, 1500);
-
+                // Use streaming fetch to get real-time progress updates
                 const response = await fetch(`${API_BASE}/analyze`, {
                     method: 'POST',
                     body: formData
                 });
-                const data = await response.json();
 
-                if (data.success) {
-                    // Update all steps with final results
-                    setStepDone('step-1-agent', "Agent 1 Complete — Visual features extracted via Qwen-VL on AMD MI300X");
-                    setStepDone('step-2-agent', "Agent 2 Complete — Clinical report generated");
-                    setStepDone('step-3-agent', `Agent 3 Complete — Report validated. Reliability: ${data.validation?.reliability_score || 0}/10`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Read the stream
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let finalData = null;
+
+                while (true) {
+                    const { done, value } = await reader.read();
                     
-                    document.getElementById('analysis-done-msg').classList.remove('hidden');
+                    if (done) break;
+                    
+                    // Decode the chunk and add to buffer
+                    buffer += decoder.decode(value, { stream: true });
+                    
+                    // Process complete lines (newline-delimited JSON)
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || ''; // Keep incomplete line in buffer
+                    
+                    for (const line of lines) {
+                        if (!line.trim()) continue;
+                        
+                        try {
+                            const data = JSON.parse(line);
+                            
+                            // Handle different status updates
+                            if (data.status === 'extracting') {
+                                setStepActive('step-1-agent', data.message || "Extracting visual features...");
+                            }
+                            else if (data.status === 'analyzing') {
+                                setStepDone('step-1-agent', "Agent 1 Complete — Visual features extracted");
+                                setStepActive('step-2-agent', data.message || "Generating clinical report...");
+                            }
+                            else if (data.status === 'validating') {
+                                setStepDone('step-2-agent', "Agent 2 Complete — Clinical report generated");
+                                setStepActive('step-3-agent', data.message || "Validating report...");
+                            }
+                            else if (data.status === 'complete' && data.success) {
+                                // Final data received
+                                finalData = data;
+                                setStepDone('step-3-agent', `Agent 3 Complete — Report validated. Reliability: ${data.validation?.reliability_score || 0}/10`);
+                                
+                                document.getElementById('analysis-done-msg').classList.remove('hidden');
 
-                    const nav3 = document.getElementById('nav-step-3');
-                    nav3.classList.add('completed'); nav3.classList.remove('active');
-                    document.getElementById('nav-circle-3').innerHTML = "✓";
+                                const nav3 = document.getElementById('nav-step-3');
+                                nav3.classList.add('completed'); nav3.classList.remove('active');
+                                document.getElementById('nav-circle-3').innerHTML = "✓";
 
-                    const nav4 = document.getElementById('nav-step-4');
-                    nav4.classList.add('completed'); nav4.classList.remove('active');
-                    document.getElementById('nav-circle-4').innerHTML = "✓";
+                                const nav4 = document.getElementById('nav-step-4');
+                                nav4.classList.add('completed'); nav4.classList.remove('active');
+                                document.getElementById('nav-circle-4').innerHTML = "✓";
 
-                    populateReport(data);
-                    currentReportContext = JSON.stringify(data.report);
-                    showToast('success', 'Analysis complete');
+                                populateReport(data);
+                                currentReportContext = JSON.stringify(data.report);
+                                showToast('success', 'Analysis complete');
+                            }
+                            else if (data.success === false) {
+                                throw new Error(data.error || "Analysis failed");
+                            }
+                        } catch (parseError) {
+                            console.error('Error parsing stream data:', parseError, 'Line:', line);
+                        }
+                    }
+                }
 
-                } else {
-                    throw new Error(data.error || "Analysis failed");
+                if (!finalData) {
+                    throw new Error("Analysis completed but no final data received");
                 }
             } catch (err) {
                 showToast('error', `Analysis failed: ${err.message}`);
