@@ -1,0 +1,3355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan AI — Clinical Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-alt: #f8f9fc;
+            --surface: #ffffff;
+            --surface-2: #fafbfc;
+            --border: #eaedf4;
+            --border-strong: #d0d6e8;
+            --primary: #2a5cff;
+            --primary-light: #eef1ff;
+            --primary-mid: #c5cfff;
+            --accent: #0ec18a;
+            --accent-light: #e6faf4;
+            --danger: #e03e3e;
+            --danger-light: #fdf0f0;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --text-1: #0f1524;
+            --text-2: #4a5270;
+            --text-3: #8b93b0;
+            --shadow-sm: 0 1px 3px rgba(15, 21, 36, 0.07), 0 1px 2px rgba(15, 21, 36, 0.04);
+            --shadow-md: 0 4px 16px rgba(15, 21, 36, 0.08), 0 2px 6px rgba(15, 21, 36, 0.04);
+            --shadow-lg: 0 12px 40px rgba(15, 21, 36, 0.10), 0 4px 12px rgba(15, 21, 36, 0.06);
+            --radius: 12px;
+            --radius-lg: 18px;
+            --font: 'DM Sans', sans-serif;
+            --font-serif: 'DM Serif Display', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-1);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            min-height: 100vh;
+            transition: opacity 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ─── TOAST ─────────────────────────────────── */
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: var(--surface);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--primary);
+            animation: slideIn 0.3s ease;
+            max-width: 340px;
+        }
+
+        .toast.success {
+            border-color: var(--accent);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-color: var(--warning);
+        }
+
+        .toast.fade-out {
+            animation: slideOut 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* ─── LANDING PAGE ──────────────────────────── */
+        #page-home {
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .land-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 64px;
+            height: 72px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .land-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-1);
+            text-decoration: none;
+        }
+
+        .land-logo-mark {
+            width: 34px;
+            height: 34px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .land-logo-mark svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .land-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .land-nav-links a {
+            font-size: 0.9rem;
+            color: var(--text-2);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .land-nav-links a:hover {
+            color: var(--text-1);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            padding: 10px 22px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font);
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: #1e4ee0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(42, 92, 255, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary.lg {
+            padding: 14px 32px;
+            font-size: 1rem;
+            border-radius: 14px;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--text-1);
+            border: 1.5px solid var(--border-strong);
+            border-radius: var(--radius);
+            padding: 10px 22px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline.lg {
+            padding: 14px 32px;
+            font-size: 1rem;
+            border-radius: 14px;
+        }
+
+        .land-hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 32px 60px;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(42, 92, 255, 0.06) 0%, transparent 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .land-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(42, 92, 255, 0.08) 1px, transparent 0);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-bottom: 28px;
+            border: 1px solid var(--primary-mid);
+        }
+
+        .hero-eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        .hero-h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            line-height: 1.15;
+            color: var(--text-1);
+            max-width: 720px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .hero-h1 em {
+            font-style: italic;
+            color: var(--primary);
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: var(--text-2);
+            max-width: 560px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 56px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-trust {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-3);
+            font-weight: 500;
+        }
+
+        .trust-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .land-features {
+            padding: 80px 64px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            color: var(--text-1);
+            margin-bottom: 48px;
+            max-width: 500px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.25s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-mid);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon svg {
+            width: 22px;
+            height: 22px;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-2);
+            line-height: 1.6;
+        }
+
+        .land-stats {
+            padding: 64px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-family: var(--font-serif);
+            font-size: 2.6rem;
+            color: var(--text-1);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-3);
+            font-weight: 500;
+        }
+
+        .land-disclaimer {
+            background: var(--warning-light);
+            border-top: 1px solid rgba(217, 119, 6, 0.2);
+            padding: 16px 64px;
+            font-size: 0.82rem;
+            color: var(--warning);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .land-footer {
+            padding: 32px 64px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .land-footer-copy {
+            font-size: 0.82rem;
+            color: var(--text-3);
+        }
+
+        .land-footer-powered {
+            font-size: 0.82rem;
+            color: var(--text-3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ─── APP PAGE ──────────────────────────────── */
+        #page-app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            height: 60px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-1);
+        }
+
+        .app-logo-mark {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-logo-mark svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .app-header-center {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* wizard progress */
+        .wizard-progress {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .wizard-step-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-3);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .wizard-step-nav.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .wizard-step-nav.completed {
+            color: var(--accent);
+        }
+
+        .nav-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: var(--bg-alt);
+            color: var(--text-3);
+            border: 1.5px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .wizard-step-nav.active .nav-circle {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .wizard-step-nav.completed .nav-circle {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .nav-line {
+            width: 24px;
+            height: 2px;
+            background: var(--border);
+            position: relative;
+        }
+
+        .nav-line-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* ─── DASHBOARD LAYOUT ──────────────────────── */
+        .app-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* LEFT — Input Panel */
+        .input-panel {
+            flex: 1;
+            width: 100%;
+            background: var(--bg);
+            border-right: none;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .input-panel-container {
+            width: 100%;
+            max-width: 680px;
+            padding: 40px 20px 100px;
+        }
+
+        .input-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .input-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .input-panel::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        /* MAIN — Results Panel */
+        .results-panel {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg);
+            padding: 28px;
+        }
+        
+
+        .results-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .results-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .results-panel::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        /* RIGHT — Chat Panel */
+        .chat-panel {
+            width: 0;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .chat-panel.open {
+            width: 340px;
+        }
+
+        .chat-panel-resize {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            cursor: col-resize;
+            background: transparent;
+            transition: background 0.2s;
+        }
+
+        .chat-panel-resize:hover {
+            background: var(--primary-mid);
+        }
+
+        .chat-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .chat-panel-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse-dot 2s infinite;
+        }
+
+        .chat-close-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: var(--bg-alt);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-3);
+            transition: all 0.2s;
+        }
+
+        .chat-close-btn:hover {
+            background: var(--border);
+            color: var(--text-1);
+        }
+
+        #chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        #chat-body::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        #chat-body::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .msg {
+            max-width: 88%;
+            font-size: 0.87rem;
+            line-height: 1.55;
+            padding: 10px 14px;
+            border-radius: 12px;
+            animation: msgIn 0.2s ease;
+        }
+
+        @keyframes msgIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg.user {
+            background: var(--primary);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg.ai {
+            background: var(--surface-2);
+            color: var(--text-1);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 4px 2px;
+        }
+
+        .typing-indicator span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--text-3);
+            animation: typing 1.2s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-6px);
+            }
+        }
+
+        .chat-input-area {
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            gap: 8px;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.87rem;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-1);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius);
+            background: var(--primary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .chat-send-btn:hover {
+            background: #1e4ee0;
+        }
+
+        /* Chat toggle button */
+        .chat-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border-radius: var(--radius);
+            background: var(--bg-alt);
+            border: 1.5px solid var(--border);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-2);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font);
+        }
+
+        .chat-toggle-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .chat-toggle-btn.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ─── WIZARD STEPS ──────────────────────────── */
+        .wizard-step-content {
+            display: none;
+        }
+        
+        .intake-chat-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            height: 380px;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .intake-chat-container::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .intake-chat-container::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .chip-btn {
+            padding: 8px 16px;
+            border-radius: 100px;
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .wizard-step-content.active {
+            display: block;
+        }
+
+        .step-header {
+            padding: 24px 24px 0;
+        }
+
+        .step-num {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-1);
+        }
+
+        .step-sub {
+            font-size: 0.85rem;
+            color: var(--text-2);
+            margin-top: 4px;
+        }
+
+        .step-body {
+            padding: 20px 24px;
+        }
+
+        .step-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* upload zone */
+        .upload-zone {
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--radius-lg);
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg);
+            margin-bottom: 16px;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .upload-zone.uploaded {
+            border-style: solid;
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .upload-icon svg {
+            width: 22px;
+            height: 22px;
+            color: var(--text-2);
+        }
+
+        .upload-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 4px;
+        }
+
+        .upload-sub {
+            font-size: 0.8rem;
+            color: var(--text-3);
+        }
+
+        .upload-formats {
+            display: inline-block;
+            margin-top: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 3px 12px;
+            font-size: 0.75rem;
+            color: var(--text-3);
+            font-family: var(--font-mono);
+        }
+
+        .preview-container {
+            position: relative;
+        }
+
+        .preview-remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* form elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-2);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            background: var(--surface);
+            color: var(--text-1);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 20px 0;
+        }
+
+        .segmented-control {
+            display: flex;
+            gap: 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1.5px solid var(--border);
+        }
+
+        .segment-btn {
+            flex: 1;
+            padding: 9px 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            background: var(--surface);
+            color: var(--text-2);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font);
+            border-right: 1px solid var(--border);
+        }
+
+        .segment-btn:last-child {
+            border-right: none;
+        }
+
+        .segment-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .card-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .card-btn {
+            padding: 10px 8px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-2);
+            background: var(--surface);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+
+        .card-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .card-btn:hover:not(.active) {
+            border-color: var(--border-strong);
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-1);
+        }
+
+        .toggle-switch {
+            width: 42px;
+            height: 24px;
+            border-radius: 100px;
+            background: var(--border);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+            border: none;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(18px);
+        }
+
+        /* run analysis btn */
+        .run-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-lg);
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .run-btn:hover {
+            background: #1e4ee0;
+            box-shadow: 0 4px 20px rgba(42, 92, 255, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            background: transparent;
+            border: 1.5px solid var(--border);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-2);
+            font-family: var(--font);
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--border-strong);
+            color: var(--text-1);
+        }
+
+        .continue-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.2s;
+        }
+
+        .continue-btn:hover {
+            background: #1e4ee0;
+        }
+
+        .continue-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .skip-link {
+            text-align: center;
+            padding: 0 24px 20px;
+            font-size: 0.82rem;
+            color: var(--text-3);
+        }
+
+        .skip-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .skip-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* ─── AGENT TRACKER ─────────────────────────── */
+        .tracker-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .tracker-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 20px;
+        }
+
+        .tracker-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tracker-step:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-alt);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-3);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .tracker-step.active .step-indicator {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tracker-step.done .step-indicator {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tracker-step-info {
+            flex: 1;
+        }
+
+        .tracker-step-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 2px;
+        }
+
+        .tracker-step-name-text {
+            color: var(--text-3);
+            font-weight: 400;
+        }
+
+        .tracker-step-detail {
+            font-size: 0.8rem;
+            color: var(--text-3);
+        }
+
+        .tracker-step.active .tracker-step-detail {
+            color: var(--primary);
+        }
+
+        .tracker-step.done .tracker-step-detail {
+            color: var(--accent);
+        }
+
+        .loading-spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--primary-mid);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .analysis-done-card {
+            background: var(--accent-light);
+            border: 1px solid rgba(14, 193, 138, 0.3);
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        /* ─── RESULTS PLACEHOLDER ───────────────────── */
+        .results-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 400px;
+            text-align: center;
+            color: var(--text-3);
+        }
+
+        .placeholder-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: var(--surface);
+            border: 2px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .placeholder-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--text-3);
+        }
+
+        .placeholder-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-2);
+            margin-bottom: 6px;
+        }
+
+        .placeholder-sub {
+            font-size: 0.85rem;
+        }
+
+        /* ─── REPORT ────────────────────────────────── */
+        #report-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .report-header {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--surface) 100%);
+        }
+
+        .report-header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .report-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .report-brand-mark {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .report-brand-mark svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .report-brand-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 0.04em;
+        }
+
+        .report-id-block {
+            text-align: right;
+        }
+
+        .report-id {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-3);
+        }
+
+        .report-date {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-3);
+            margin-top: 2px;
+        }
+
+        .report-title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--text-1);
+            margin-bottom: 4px;
+        }
+
+        .amd-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-light);
+            border: 1px solid var(--primary-mid);
+            color: var(--primary);
+            border-radius: 100px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .amd-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .patient-summary-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 16px 28px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        .summary-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 5px 14px;
+            font-size: 0.8rem;
+            color: var(--text-2);
+        }
+
+        .summary-pill b {
+            color: var(--text-1);
+            font-weight: 600;
+        }
+
+        .image-badges {
+            display: flex;
+            gap: 8px;
+            padding: 14px 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ibadge {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1.5px solid;
+        }
+
+        .ibadge-orange {
+            background: var(--warning-light);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: var(--warning);
+        }
+
+        .ibadge-blue {
+            background: var(--primary-light);
+            border-color: var(--primary-mid);
+            color: var(--primary);
+        }
+
+        .ibadge-green {
+            background: var(--accent-light);
+            border-color: rgba(14, 193, 138, 0.3);
+            color: var(--accent);
+        }
+
+        .report-section {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .report-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-head {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-head::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Risk gauge */
+        .risk-section {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .gauge-wrap {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            flex-shrink: 0;
+        }
+
+        .gauge-fill {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: conic-gradient(var(--danger) 0%, transparent 0%);
+            position: relative;
+        }
+
+        .gauge-fill::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            border-radius: 50%;
+            background: var(--surface);
+        }
+
+        .gauge-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .gauge-score {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--text-1);
+            line-height: 1;
+        }
+
+        .gauge-label {
+            font-size: 0.65rem;
+            color: var(--text-3);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .risk-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .risk-badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .rbadge {
+            padding: 6px 16px;
+            border-radius: var(--radius);
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1.5px solid;
+        }
+
+        .rbadge-danger {
+            background: var(--danger-light);
+            border-color: rgba(224, 62, 62, 0.3);
+            color: var(--danger);
+        }
+
+        .rbadge-warning {
+            background: var(--warning-light);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: var(--warning);
+        }
+
+        .rbadge-success {
+            background: var(--accent-light);
+            border-color: rgba(14, 193, 138, 0.3);
+            color: var(--accent);
+        }
+
+        .rbadge-blue {
+            background: var(--primary-light);
+            border-color: var(--primary-mid);
+            color: var(--primary);
+        }
+
+        .risk-type {
+            font-size: 0.88rem;
+            color: var(--text-2);
+            font-weight: 500;
+        }
+
+        .risk-type span {
+            color: var(--text-1);
+            font-weight: 600;
+        }
+
+        .risk-reasoning {
+            font-size: 0.85rem;
+            color: var(--text-2);
+            line-height: 1.6;
+            padding: 12px 14px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        /* findings */
+        .finding-card {
+            padding: 14px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--primary);
+            margin-bottom: 10px;
+            font-size: 0.88rem;
+            color: var(--text-1);
+            line-height: 1.55;
+        }
+
+        .finding-card:last-child {
+            margin-bottom: 0;
+        }
+
+        /* conditions */
+        .conditions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .condition-card {
+            padding: 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .condition-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-1);
+            margin-bottom: 10px;
+        }
+
+        .confidence-bar {
+            height: 5px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        .condition-note {
+            font-size: 0.78rem;
+            color: var(--text-2);
+            line-height: 1.4;
+        }
+
+        /* next steps */
+        .action-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+        }
+
+        .action-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .action-body {
+            flex: 1;
+        }
+
+        .action-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 3px;
+        }
+
+        .action-reason {
+            font-size: 0.82rem;
+            color: var(--text-2);
+        }
+
+        .urgency-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 100px;
+            border: 1.5px solid;
+            flex-shrink: 0;
+        }
+
+        .urgency-urgent {
+            background: var(--danger-light);
+            border-color: rgba(224, 62, 62, 0.3);
+            color: var(--danger);
+        }
+
+        .urgency-soon {
+            background: var(--warning-light);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: var(--warning);
+        }
+
+        .urgency-routine {
+            background: var(--accent-light);
+            border-color: rgba(14, 193, 138, 0.3);
+            color: var(--accent);
+        }
+
+        /* validator */
+        .validator-block {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .validator-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .validator-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-2);
+        }
+
+        .validator-score {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-1);
+        }
+
+        .validator-bar-bg {
+            height: 5px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .validator-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--accent);
+            transition: width 1s ease;
+        }
+
+        .validator-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .vchip {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1.5px solid;
+        }
+
+        /* disclaimer */
+        .report-disclaimer {
+            font-size: 0.78rem;
+            color: var(--text-3);
+            line-height: 1.5;
+            padding: 16px 28px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 14px;
+            margin: 20px 0 0;
+            border-radius: var(--radius-lg);
+            background: var(--text-1);
+            color: #fff;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: #1a2035;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        @media (max-width: 900px) {
+            .land-nav {
+                padding: 0 24px;
+            }
+
+            .land-features,
+            .land-stats,
+            .land-disclaimer,
+            .land-footer {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .input-panel {
+                width: 100%;
+            }
+
+            .app-body {
+                flex-direction: column;
+            }
+
+            .chat-panel.open {
+                width: 100%;
+                height: 360px;
+            }
+
+            .risk-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════
+     LANDING PAGE
+════════════════════════════════════════════════════ -->
+    <div id="page-home" class="page">
+        <nav class="land-nav">
+            <a href="#" class="land-logo">
+                <div class="land-logo-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                </div>
+                MediScan AI
+            </a>
+            <div class="land-nav-links">
+                <a href="#how-it-works">How it works</a>
+                <a href="#about">About</a>
+            </div>
+            <button class="btn-primary" onclick="showPage('app')">Launch Platform</button>
+        </nav>
+
+        <section class="land-hero">
+            <div class="hero-eyebrow">
+                <div class="hero-eyebrow-dot"></div>
+                Powered by AMD MI300X — 192GB HBM3
+            </div>
+            <h1 class="hero-h1">
+                Medical Imaging Analysis<br>
+                Driven by <em>Clinical AI</em>
+            </h1>
+            <p class="hero-sub">
+                Upload any diagnostic scan — X-Ray, MRI, CT — and receive a complete clinical report in seconds,
+                generated by a three-agent AI pipeline running on AMD MI300X GPUs.
+            </p>
+            <div class="hero-actions">
+                <button class="btn-primary lg" onclick="showPage('app')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <polygon points="10,8 16,12 10,16 10,8" fill="currentColor" stroke="none" />
+                    </svg>
+                    Start Analysis
+                </button>
+                <a href="#how-it-works" class="btn-outline lg">See how it works</a>
+            </div>
+            <div class="hero-trust">
+                <div class="trust-item">
+                    <div class="trust-dot"></div>HIPAA-Compliant Architecture
+                </div>
+                <div class="trust-item">
+                    <div class="trust-dot"></div>AMD MI300X GPU Inference
+                </div>
+                <div class="trust-item">
+                    <div class="trust-dot"></div>3-Agent Verification Pipeline
+                </div>
+                <div class="trust-item">
+                    <div class="trust-dot"></div>Sub-5 Second Analysis
+                </div>
+            </div>
+        </section>
+
+        <section class="land-features" id="how-it-works">
+            <div class="section-label">How it works</div>
+            <div class="section-title">A three-agent pipeline built for clinical precision</div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21,15 16,10 5,21" />
+                        </svg>
+                    </div>
+                    <h3>Agent 1 — Extractor</h3>
+                    <p>Qwen2-VL running on AMD MI300X at full precision analyzes your scan and extracts detailed visual
+                        observations — structures, anomalies, densities, and locations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z" />
+                            <path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                            <path
+                                d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z" />
+                            <path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z" />
+                            <path
+                                d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z" />
+                            <path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z" />
+                            <path
+                                d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z" />
+                            <path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z" />
+                        </svg>
+                    </div>
+                    <h3>Agent 2 — Analyst</h3>
+                    <p>Gemini processes the extracted observations alongside patient context to generate a structured
+                        clinical report with differential diagnosis, risk scoring, and staging.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <h3>Agent 3 — Validator</h3>
+                    <p>A second AI pass cross-checks the report for clinical consistency — verifying that findings,
+                        staging, and recommendations are coherent before presenting the result.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="land-stats" id="about">
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-num">192GB</div>
+                    <div class="stat-label">AMD MI300X HBM3 VRAM</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">AI Agents in Pipeline</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">&lt;5s</div>
+                    <div class="stat-label">Average Analysis Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">ROCm</div>
+                    <div class="stat-label">7.2 — Latest AMD Stack</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="land-disclaimer">
+            MediScan AI is an assistive tool for research and educational purposes. Reports are not a substitute for
+            professional medical diagnosis. Always consult a licensed physician.
+        </div>
+
+        <footer class="land-footer">
+            <div class="land-footer-copy">2026 MediScan AI. Built for the AMD Developer Hackathon.</div>
+            <div class="land-footer-powered">
+                Powered by AMD MI300X · Qwen2-VL · Gemini
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════
+     APP PAGE
+════════════════════════════════════════════════════ -->
+    <div id="page-app" class="page hidden">
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="app-logo">
+                <div class="app-logo-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                </div>
+                MediScan AI
+            </div>
+
+            <div class="app-header-center">
+                <div class="wizard-progress">
+                    <div class="wizard-step-nav active" id="nav-step-1">
+                        <div class="nav-circle" id="nav-circle-1">1</div>
+                        Symptoms
+                    </div>
+                    <div class="nav-line">
+                        <div class="nav-line-fill" id="line-fill-1"></div>
+                    </div>
+                    <div class="wizard-step-nav" id="nav-step-2">
+                        <div class="nav-circle" id="nav-circle-2">2</div>
+                        Documentation
+                    </div>
+                    <div class="nav-line">
+                        <div class="nav-line-fill" id="line-fill-2"></div>
+                    </div>
+                    <div class="wizard-step-nav" id="nav-step-3">
+                        <div class="nav-circle" id="nav-circle-3">3</div>
+                        AI Analysis
+                    </div>
+                    <div class="nav-line">
+                        <div class="nav-line-fill" id="line-fill-3"></div>
+                    </div>
+                    <div class="wizard-step-nav" id="nav-step-4">
+                        <div class="nav-circle" id="nav-circle-4">4</div>
+                        Clinical Report
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-header-actions">
+                <button class="btn-outline" onclick="showPage('home')" style="font-size:0.8rem; padding: 7px 14px;">
+                    Home
+                </button>
+                <button class="chat-toggle-btn" id="chat-toggle-btn" onclick="toggleChatPanel()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Health Advisor
+                </button>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="app-body">
+
+            <!-- LEFT: Input Panel -->
+            <aside class="input-panel">
+                <div class="input-panel-container">
+
+                <!-- STEP 1: Symptoms -->
+                <div class="wizard-step-content active" id="step-1-content">
+                    <div class="step-header" style="text-align: center; margin-bottom: 24px;">
+                        <div class="step-title" style="font-size: 1.5rem;">AI Clinical Consultation</div>
+                        <div class="step-sub" style="font-size: 1rem;">Let's get started. Tell me what brings you in today.</div>
+                    </div>
+                    <div class="step-body">
+                        <div class="intake-chat-container" id="intake-chat-container">
+                            <div class="msg ai">Hello. What symptoms are you experiencing today?</div>
+                        </div>
+                        
+                        <div class="suggestion-chips" id="suggestion-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+                            <button class="chip-btn" onclick="sendIntakeMessage('I have a weird skin rash on my arm')">Skin Rash</button>
+                            <button class="chip-btn" onclick="sendIntakeMessage('I feel extremely tired and have unexplained bruising')">Fatigue & Bruising</button>
+                            <button class="chip-btn" onclick="sendIntakeMessage('My knee hurts when I walk')">Joint Pain</button>
+                            <button class="chip-btn" onclick="sendIntakeMessage('I have a persistent cough and chest pain')">Cough & Chest Pain</button>
+                        </div>
+
+                        <div class="intake-input-area" style="display: flex; gap: 8px; margin-top: 24px;">
+                            <input type="text" id="intake-input" class="form-control" placeholder="Type your symptoms..." onkeypress="if(event.key==='Enter') sendIntakeMessage()">
+                            <button class="btn-primary" onclick="sendIntakeMessage()" style="padding: 0 24px;">Send</button>
+                        </div>
+                    </div>
+                    <div class="step-footer" style="margin-top: 24px; text-align: center;">
+                        <button class="continue-btn hidden" id="btn-proceed-upload" onclick="proceedToUploads()" style="width: 100%; background: var(--primary);">
+                            Proceed to Uploads ➔
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Documentation & Patient Details -->
+                <div class="wizard-step-content" id="step-2-content">
+                    <div class="step-header">
+                        <div class="step-num">Step 2 of 4</div>
+                        <div class="step-title" id="triage-doc-title">Required Documentation</div>
+                        <div class="step-sub" id="triage-doc-sub">Based on your symptoms, please upload the following.</div>
+                    </div>
+                    <div class="step-body">
+                        
+                        <!-- Dynamic Upload Zones -->
+                        <!-- Category A: Blood Work / Pathology (PDF) -->
+                        <div id="upload-zone-A" style="display: none;">
+                            <div class="upload-zone" id="pdf-zone" onclick="document.getElementById('pdf-input').click()">
+                                <div id="pdf-idle">
+                                    <div class="upload-icon" style="width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 12px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                        </svg>
+                                    </div>
+                                    <div class="upload-title" style="font-size: 1rem; font-weight: 600;">Upload Pathology / Blood Report</div>
+                                    <div class="upload-sub" style="font-size: 0.85rem; color: var(--text-2); margin-top: 4px;">PDF format only</div>
+                                </div>
+                                <div id="pdf-preview" style="display: none; position: relative; text-align: center;">
+                                    <button class="preview-remove-btn" onclick="event.stopPropagation(); removePdf()" style="top:-8px;right:-8px;">x</button>
+                                    <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--primary); font-weight: 600; word-break: break-all; padding: 20px;" id="pdf-info"></div>
+                                </div>
+                                <input type="file" id="pdf-input" accept=".pdf" style="display: none;">
+                            </div>
+                        </div>
+
+                        <!-- Category B & C: Imaging Scan / Physical Photo (Image) -->
+                        <div id="upload-zone-B" style="display: none;">
+                            <div class="upload-zone" id="main-scan-zone" onclick="document.getElementById('main-scan-input').click()">
+                                <div id="main-scan-idle">
+                                    <div class="upload-icon" style="width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 12px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                                            <circle cx="8.5" cy="8.5" r="1.5" />
+                                            <polyline points="21,15 16,10 5,21" />
+                                        </svg>
+                                    </div>
+                                    <div class="upload-title" id="image-upload-title" style="font-size: 1rem; font-weight: 600;">Upload Imaging Scan</div>
+                                    <div class="upload-sub" id="image-upload-sub" style="font-size: 0.85rem; color: var(--text-2); margin-top: 4px;">JPG, PNG up to 20MB</div>
+                                </div>
+                                <div class="preview-container" id="main-scan-preview-container" style="display: none; position: relative;">
+                                    <button class="preview-remove-btn" onclick="event.stopPropagation(); removeMainScan()" style="top:-8px;right:-8px;">x</button>
+                                    <img id="main-scan-image" src="" alt="Preview" style="max-height: 200px; object-fit: contain; width: 100%; border-radius: 8px;">
+                                    <div style="margin-top: 10px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-3);" id="main-scan-info"></div>
+                                </div>
+                                <input type="file" id="main-scan-input" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="form-divider" style="margin: 32px 0;"></div>
+
+                        <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 16px;">Patient Details</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Patient Name</label>
+                                <input type="text" class="form-control" placeholder="e.g. John Doe" id="pat-name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Age</label>
+                                <input type="number" class="form-control" placeholder="e.g. 58" id="pat-age" min="0" max="120">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Gender</label>
+                                <select class="form-control" id="pat-gender-select">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Blood Type</label>
+                                <select class="form-control" id="pat-blood">
+                                    <option value="Unknown">Unknown</option>
+                                    <option>A+</option><option>A-</option>
+                                    <option>B+</option><option>B-</option>
+                                    <option>AB+</option><option>AB-</option>
+                                    <option>O+</option><option>O-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 16px;">
+                            <label class="form-label">Any previously known conditions?</label>
+                            <input type="text" class="form-control" placeholder="e.g. Type 2 Diabetes, Hypertension..." id="pat-conditions">
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <label class="form-label">Risk Factors</label>
+                            <div class="toggle-row">
+                                <span class="toggle-label">Smoking History</span>
+                                <button class="toggle-switch" onclick="this.classList.toggle('active')"></button>
+                            </div>
+                            <div class="toggle-row">
+                                <span class="toggle-label">Alcohol Use</span>
+                                <button class="toggle-switch" onclick="this.classList.toggle('active')"></button>
+                            </div>
+                            <div class="toggle-row">
+                                <span class="toggle-label">Family Cancer History</span>
+                                <button class="toggle-switch" onclick="this.classList.toggle('active')"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-footer" style="flex-direction: column; gap: 10px;">
+                        <button class="run-btn" id="run-analysis-btn" onclick="startAnalysis()">
+                            Run Analysis
+                        </button>
+                        <button class="back-btn" style="width:100%;" onclick="goToStep(1)">Back</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: AI Analysis Pipeline -->
+                <div class="wizard-step-content" id="step-3-content">
+                    <div class="step-header">
+                        <div class="step-num">Step 3 of 4</div>
+                        <div class="step-title">AI Pipeline Running</div>
+                        <div class="step-sub">Processing your case through multiple models.</div>
+                    </div>
+                    <div class="step-body">
+                        <div class="tracker-card">
+                            <div class="tracker-title">System Status</div>
+
+                            <div class="tracker-step" id="step-1-agent">
+                                <div class="step-indicator">1</div>
+                                <div class="tracker-step-info">
+                                    <div class="tracker-step-name">Extractor Agent</div>
+                                    <div class="tracker-step-detail" id="step-1-agent-text">Waiting...</div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step" id="step-2-agent">
+                                <div class="step-indicator">2</div>
+                                <div class="tracker-step-info">
+                                    <div class="tracker-step-name">Analyst Agent <span class="tracker-step-name-text">— Gemini 2.5</span></div>
+                                    <div class="tracker-step-detail" id="step-2-agent-text">Waiting...</div>
+                                </div>
+                            </div>
+
+                            <div class="tracker-step" id="step-3-agent">
+                                <div class="step-indicator">3</div>
+                                <div class="tracker-step-info">
+                                    <div class="tracker-step-name">Validator Agent <span class="tracker-step-name-text">— Gemini 2.5</span></div>
+                                    <div class="tracker-step-detail" id="step-3-agent-text">Waiting...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="analysis-done-msg" class="hidden">
+                            <div class="analysis-done-card" style="background: var(--bg-alt); border-color: var(--border-strong); color: var(--text-1);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                Clinical report successfully generated.
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 16px;">
+                            <button class="back-btn" onclick="goToStep(1)" style="width: 100%;">Start New Consultation</button>
+                        </div>
+                    </div>
+                </div>
+
+                </div> <!-- end input-panel-container -->
+            </aside>
+
+            <!-- MAIN: Results Panel -->
+            <main class="results-panel">
+
+                <!-- Placeholder -->
+                <div class="results-placeholder" id="results-placeholder">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                    </div>
+                    <div class="placeholder-title">Your clinical report will appear here</div>
+                    <div class="placeholder-sub">Upload a scan and complete the patient details to begin analysis</div>
+                </div>
+
+                <!-- Report -->
+                <div id="report-container" class="hidden">
+
+                    <!-- Report Header -->
+                    <div class="report-header">
+                        <div class="report-header-top">
+                            <div>
+                                <div class="report-brand">
+                                    <div class="report-brand-mark">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+                                            stroke-linecap="round">
+                                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                        </svg>
+                                    </div>
+                                    <div class="report-brand-name">MEDISCAN AI</div>
+                                </div>
+                                <div
+                                    style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--text-1); margin-top: 8px;">
+                                    Clinical Analysis Report</div>
+                            </div>
+                            <div class="report-id-block">
+                                <div class="report-id">ID: MSAI-<span id="current-date"></span></div>
+                            </div>
+                        </div>
+                        <div class="amd-badge">
+                            <div class="amd-badge-dot"></div>
+                            Analyzed on AMD MI300X · 192GB VRAM · ROCm 7.2 · Qwen2-VL-7B
+                        </div>
+                    </div>
+
+                    <!-- Patient Summary -->
+                    <div class="patient-summary-row">
+                        <div class="summary-pill">Name: <b id="rep-name">--</b></div>
+                        <div class="summary-pill">Age: <b id="rep-age">--</b></div>
+                        <div class="summary-pill">Gender: <b id="rep-gender">--</b></div>
+                        <div class="summary-pill">Blood Type: <b id="rep-blood">--</b></div>
+                        <div class="summary-pill">Smoking: <b id="rep-smoking">--</b></div>
+                        <div class="summary-pill">Alcohol: <b id="rep-alcohol">--</b></div>
+                        <div class="summary-pill">Family Hist: <b id="rep-family">--</b></div>
+                    </div>
+
+                    <!-- Image Badges -->
+                    <div class="image-badges">
+                        <span class="ibadge ibadge-orange" id="rep-image-type">Image: --</span>
+                        <span class="ibadge ibadge-blue" id="rep-body-region">Region: --</span>
+                        <span class="ibadge ibadge-green" id="rep-image-quality">Quality: --</span>
+                    </div>
+
+                    <!-- Cancer Risk Assessment -->
+                    <div class="report-section">
+                        <div class="section-head">Cancer Risk Assessment</div>
+                        <div class="risk-section">
+                            <div class="gauge-wrap">
+                                <div class="gauge-fill" id="risk-gauge"></div>
+                                <div class="gauge-center">
+                                    <div class="gauge-score" id="risk-score">0</div>
+                                    <div class="gauge-label">Score / 100</div>
+                                </div>
+                            </div>
+                            <div class="risk-details">
+                                <div class="risk-badge-row">
+                                    <span class="rbadge rbadge-danger" id="risk-level-badge">--</span>
+                                    <span class="rbadge rbadge-blue" id="risk-stage-badge">--</span>
+                                </div>
+                                <div class="risk-type">Suspected Type: <span id="risk-suspected-type">--</span></div>
+                                <div class="risk-reasoning" id="risk-reasoning">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Findings -->
+                    <div class="report-section">
+                        <div class="section-head">Key Findings</div>
+                        <div id="findings-container"></div>
+                    </div>
+
+                    <!-- Differential Diagnosis -->
+                    <div class="report-section">
+                        <div class="section-head">Differential Diagnosis</div>
+                        <div class="conditions-grid" id="conditions-container"></div>
+                    </div>
+
+                    <!-- Recommended Next Steps -->
+                    <div class="report-section">
+                        <div class="section-head">Recommended Next Steps</div>
+                        <div id="next-steps-container"></div>
+                    </div>
+
+                    <!-- Validator -->
+                    <div class="report-section">
+                        <div class="section-head">Validation</div>
+                        <div class="validator-block">
+                            <div class="validator-top">
+                                <div class="validator-label">Agent 3 — Validator</div>
+                                <div class="validator-score" id="validator-score-text">Reliability: --/10</div>
+                            </div>
+                            <div class="validator-bar-bg">
+                                <div class="validator-bar-fill" id="validator-bar-fill" style="width: 0%;"></div>
+                            </div>
+                            <div class="validator-chips" id="validator-flags-container">
+                                <span class="vchip rbadge-success" id="validator-verdict">VERDICT: --</span>
+                                <span class="vchip"
+                                    style="background: var(--bg); border-color: var(--border); color: var(--text-2);"
+                                    id="validator-note">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="report-disclaimer">
+                        MediScan AI is an assistive AI tool. Reports are not a substitute for professional medical
+                        diagnosis. Always consult a licensed physician.
+                    </div>
+
+                    <div style="padding: 0 28px 28px;">
+                        <button id="download-btn" onclick="downloadPDF()" class="download-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Download Full PDF Report
+                        </button>
+
+                        <div style="margin-top: 24px; text-align: center;">
+                            <button class="btn-primary lg" onclick="enableTreatmentMode()" style="background: var(--accent); border-color: var(--accent); box-shadow: 0 4px 14px rgba(14, 193, 138, 0.3); width: 100%;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                Discuss Treatment & Cure Options
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <!-- RIGHT: Chat Panel -->
+            <aside class="chat-panel" id="chat-panel">
+                <div class="chat-panel-resize" id="chat-resize-handle"></div>
+                <div class="chat-panel-header">
+                    <div class="chat-panel-title">
+                        <div class="chat-status-dot"></div>
+                        MediScan Health Advisor
+                    </div>
+                    <button class="chat-close-btn" onclick="toggleChatPanel()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="chat-body">
+                    <div class="msg ai">Hello. I am your MediScan AI assistant. You can ask me about your report, what
+                        findings mean, treatment options, cancer stages, or anything medical. How can I help?</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Ask a question..."
+                        onkeypress="handleChatKey(event)">
+                    <button class="chat-send-btn" onclick="sendMessage()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13" />
+                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                        </svg>
+                    </button>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+        let currentReportContext = null;
+
+        function showToast(type, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = type === 'success' ? '✓' : type === 'error' ? '✕' : '!';
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', options);
+
+        function showPage(pageId) {
+            // If going to home, refresh the page to reset everything
+            if (pageId === 'home') {
+                location.reload();
+                return;
+            }
+
+            const current = document.querySelector('.page:not(.hidden)');
+            const next = document.getElementById('page-' + pageId);
+
+            if (current && current.id !== 'page-' + pageId) {
+                current.style.opacity = '0';
+                setTimeout(() => {
+                    current.classList.add('hidden');
+                    next.classList.remove('hidden');
+                    next.style.opacity = '0';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    // Force reflow
+                    void next.offsetWidth;
+
+                    next.style.opacity = '1';
+                }, 300);
+            } else {
+                document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+                next.classList.remove('hidden');
+                next.style.opacity = '1';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Chat Panel Toggle
+        function toggleChatPanel() {
+            const panel = document.getElementById('chat-panel');
+            const btn = document.getElementById('chat-toggle-btn');
+            const isOpen = panel.classList.contains('open');
+
+            if (isOpen) {
+                panel.classList.remove('open');
+                btn.classList.remove('active');
+                panel.style.width = ''; // Remove inline width to allow CSS transition back to 0
+            } else {
+                panel.classList.add('open');
+                btn.classList.add('active');
+                setTimeout(() => document.getElementById('chat-input').focus(), 350);
+            }
+        }
+
+        // Resizable chat panel
+        const resizeHandle = document.getElementById('chat-resize-handle');
+        const chatPanel = document.getElementById('chat-panel');
+        let isResizing = false;
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+            chatPanel.style.transition = 'none';
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const newWidth = window.innerWidth - e.clientX;
+            if (newWidth > 240 && newWidth < window.innerWidth - 300) {
+                chatPanel.style.width = newWidth + 'px';
+            }
+        });
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                chatPanel.style.transition = '';
+            }
+            isResizing = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        });
+
+        let currentStep = 1;
+        const resultsPlaceholder = document.getElementById('results-placeholder');
+        const reportContainer = document.getElementById('report-container');
+
+        let currentMainScanFile = null;
+        let currentPdfFile = null;
+        let currentExtraFile = null;
+
+        function goToStep(step) {
+            document.querySelector('.input-panel').style.display = 'flex';
+            document.querySelector('.results-panel').style.display = 'none';
+            document.querySelector('.app-body').classList.remove('split-screen-mode');
+
+            document.querySelectorAll('.wizard-step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + step + '-content').classList.add('active');
+
+            for (let i = 1; i <= 4; i++) {
+                const nav = document.getElementById('nav-step-' + i);
+                const circle = document.getElementById('nav-circle-' + i);
+                if (i < step) { nav.classList.add('completed'); nav.classList.remove('active'); circle.innerHTML = "✓"; }
+                else if (i === step) { nav.classList.add('active'); nav.classList.remove('completed'); circle.innerHTML = i; }
+                else { nav.classList.remove('active', 'completed'); circle.innerHTML = i; }
+                if (i < 4) {
+                    const lineFill = document.getElementById('line-fill-' + i);
+                    if (i < step) lineFill.style.width = '100%'; else lineFill.style.width = '0%';
+                }
+            }
+            currentStep = step;
+        }
+
+        let intakeMessageCount = 0;
+        let triageDataGlobal = null;
+
+        async function sendIntakeMessage(text) {
+            const msg = text || document.getElementById('intake-input').value.trim();
+            if (!msg) return;
+            
+            document.getElementById('intake-input').value = '';
+            document.getElementById('suggestion-chips').style.display = 'none';
+            
+            const chatBox = document.getElementById('intake-chat-container');
+            
+            // Add user msg
+            const userDiv = document.createElement('div');
+            userDiv.className = 'msg user';
+            userDiv.innerText = msg;
+            chatBox.appendChild(userDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            intakeMessageCount++;
+            
+            // Show typing
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'msg ai';
+            typingDiv.id = 'intake-typing';
+            typingDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            chatBox.appendChild(typingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            try {
+                // Collect all messages for context
+                const msgs = Array.from(chatBox.querySelectorAll('.msg')).map(el => el.innerText).join('\n');
+                
+                const response = await fetch(`${API_BASE}/triage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ symptoms: msgs })
+                });
+                const data = await response.json();
+                
+                typingDiv.remove();
+                
+                if (data.success) {
+                    triageDataGlobal = data;
+                    document.getElementById('btn-proceed-upload').classList.remove('hidden');
+                    
+                    if (intakeMessageCount < 2 && data.follow_up_questions && data.follow_up_questions.length > 0) {
+                        const aiDiv = document.createElement('div');
+                        aiDiv.className = 'msg ai';
+                        aiDiv.innerText = data.follow_up_questions[0];
+                        chatBox.appendChild(aiDiv);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    } else {
+                        // Max 2 messages reached - show confirmation and button
+                        const confirmDiv = document.createElement('div');
+                        confirmDiv.className = 'msg ai';
+                        confirmDiv.innerText = "Great! I've understood your symptoms. Based on what you've told me, I recommend uploading " +
+                            (data.required_files || []).map(f => f.replace('_', ' ')).join(' and ') +
+                            " for a comprehensive analysis. Click the button below when you're ready to proceed.";
+                        chatBox.appendChild(confirmDiv);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        
+                        // Show proceed button
+                        const proceedBtn = document.createElement('button');
+                        proceedBtn.className = 'btn-primary';
+                        proceedBtn.style.marginTop = '16px';
+                        proceedBtn.style.width = '100%';
+                        proceedBtn.innerText = 'Proceed to Upload Documents';
+                        proceedBtn.onclick = proceedToUploads;
+                        chatBox.appendChild(proceedBtn);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                        
+                        // Hide input area
+                        document.querySelector('.intake-input-area').style.display = 'none';
+                    }
+                } else {
+                    const errDiv = document.createElement('div');
+                    errDiv.className = 'msg ai';
+                    errDiv.style.color = 'var(--danger)';
+                    errDiv.innerText = 'Analysis failed: ' + data.error;
+                    chatBox.appendChild(errDiv);
+                }
+            } catch (err) {
+                typingDiv.remove();
+                const errDiv = document.createElement('div');
+                errDiv.className = 'msg ai';
+                errDiv.style.color = 'var(--danger)';
+                errDiv.innerText = 'Connection failed: ' + err.message;
+                chatBox.appendChild(errDiv);
+            }
+        }
+
+        function proceedToUploads() {
+            if (!triageDataGlobal) return;
+            const requiredFiles = triageDataGlobal.required_files || [];
+            
+            document.getElementById('upload-zone-A').style.display = 'block';
+            document.getElementById('upload-zone-B').style.display = 'block';
+            document.getElementById('triage-doc-sub').innerText = "Please upload an Imaging Scan (if any) and a supporting Document/Blood Report (if any).";
+            document.getElementById('image-upload-title').innerText = "Upload Imaging Scan / Photo";
+            
+            goToStep(2);
+        }
+
+        function enableTreatmentMode() {
+            // Just open the chat panel normally (same as clicking Assistant button)
+            const chatPanel = document.getElementById('chat-panel');
+            const btn = document.getElementById('chat-toggle-btn');
+            
+            if (!chatPanel.classList.contains('open')) {
+                chatPanel.classList.add('open');
+                btn.classList.add('active');
+            }
+            
+            // Add initial treatment message
+            addMessage("I have reviewed your clinical report. What questions do you have about the diagnosis, treatment options, or next steps?", 'ai');
+            
+            // Focus chat
+            setTimeout(() => document.getElementById('chat-input').focus(), 350);
+        }
+
+        function setSegment(groupId, btn) {
+            document.querySelectorAll('#' + groupId + ' .segment-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function setCard(groupId, btn) {
+            document.querySelectorAll('#' + groupId + ' .card-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        const mainScanInput = document.getElementById('main-scan-input');
+        const mainScanZone = document.getElementById('main-scan-zone');
+        mainScanZone.addEventListener('dragover', (e) => { e.preventDefault(); mainScanZone.classList.add('dragover'); });
+        mainScanZone.addEventListener('dragleave', () => { mainScanZone.classList.remove('dragover'); });
+        mainScanZone.addEventListener('drop', (e) => { e.preventDefault(); mainScanZone.classList.remove('dragover'); if (e.dataTransfer.files[0]) handleMainScan(e.dataTransfer.files[0]); });
+        mainScanInput.addEventListener('change', (e) => { if (e.target.files[0]) handleMainScan(e.target.files[0]); });
+
+        function handleMainScan(file) {
+            if (!file.type.startsWith('image/')) return alert("Please upload a valid image file.");
+            currentMainScanFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('main-scan-image').src = e.target.result;
+                document.getElementById('main-scan-info').innerText = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                document.getElementById('main-scan-idle').style.display = 'none';
+                document.getElementById('main-scan-preview-container').style.display = 'block';
+                mainScanZone.classList.add('uploaded');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeMainScan() {
+            mainScanInput.value = "";
+            currentMainScanFile = null;
+            document.getElementById('main-scan-idle').style.display = 'block';
+            document.getElementById('main-scan-preview-container').style.display = 'none';
+            mainScanZone.classList.remove('uploaded');
+        }
+
+        const pdfInput = document.getElementById('pdf-input');
+        const pdfZone = document.getElementById('pdf-zone');
+        pdfZone.addEventListener('dragover', (e) => { e.preventDefault(); pdfZone.classList.add('dragover'); });
+        pdfZone.addEventListener('dragleave', () => { pdfZone.classList.remove('dragover'); });
+        pdfZone.addEventListener('drop', (e) => { e.preventDefault(); pdfZone.classList.remove('dragover'); if (e.dataTransfer.files[0]) handlePdf(e.dataTransfer.files[0]); });
+        pdfInput.addEventListener('change', (e) => { if (e.target.files[0]) handlePdf(e.target.files[0]); });
+
+        function handlePdf(file) {
+            if (file.type !== 'application/pdf') return alert('Please upload a PDF file.');
+            currentPdfFile = file;
+            document.getElementById('pdf-info').innerText = file.name;
+            document.getElementById('pdf-idle').style.display = 'none';
+            document.getElementById('pdf-preview').style.display = 'block';
+            pdfZone.classList.add('uploaded');
+        }
+        function removePdf() {
+            pdfInput.value = ""; currentPdfFile = null;
+            document.getElementById('pdf-idle').style.display = 'block';
+            document.getElementById('pdf-preview').style.display = 'none';
+            pdfZone.classList.remove('uploaded');
+        }
+
+
+        function setStepActive(id, text) {
+            const step = document.getElementById(id);
+            step.classList.add('active');
+            step.querySelector('.step-indicator').innerHTML = `<span class="loading-spinner"></span>`;
+            document.getElementById(id + '-text').innerHTML = text;
+        }
+
+        function setStepDone(id, text) {
+            const step = document.getElementById(id);
+            step.classList.remove('active');
+            step.classList.add('done');
+            step.querySelector('.step-indicator').innerHTML = "✓";
+            document.getElementById(id + '-text').innerText = text;
+        }
+
+        async function startAnalysis() {
+            if (!currentMainScanFile && !currentPdfFile) {
+                alert('Please upload the required documentation first');
+                return;
+            }
+
+            const nameInput = document.getElementById('pat-name');
+            const ageInput = document.getElementById('pat-age');
+            let valid = true;
+            if (!nameInput.value) { nameInput.style.borderColor = 'var(--danger)'; valid = false; }
+            else { nameInput.style.borderColor = ''; }
+            if (!ageInput.value) { ageInput.style.borderColor = 'var(--danger)'; valid = false; }
+            else { ageInput.style.borderColor = ''; }
+            if (!valid) return;
+
+            goToStep(3);
+
+            const nameVal = nameInput.value;
+            const ageVal = ageInput.value;
+            const genderVal = document.getElementById('pat-gender-select').value;
+            const bloodVal = document.getElementById('pat-blood').value;
+            // Scan type and region are no longer in UI, leaving blank or omitting
+            const scanTypeVal = "";
+            const regionVal = "";
+            const conditionsVal = document.getElementById('pat-conditions').value;
+            const chatBox = document.getElementById('intake-chat-container');
+            const symptomsVal = chatBox ? Array.from(chatBox.querySelectorAll('.msg')).map(el => el.innerText).join('\n') : '';
+            const toggles = document.querySelectorAll('.toggle-switch');
+            const smokingVal = toggles[0].classList.contains('active') ? 'Yes' : 'No';
+            const alcoholVal = toggles[1].classList.contains('active') ? 'Yes' : 'No';
+            const familyVal = toggles[2].classList.contains('active') ? 'Yes' : 'No';
+
+            const runBtn = document.getElementById('run-analysis-btn');
+            runBtn.disabled = true;
+            runBtn.innerHTML = 'Analyzing...';
+            runBtn.style.opacity = '0.7';
+
+            document.querySelectorAll('input, select, textarea, .segment-btn, .card-btn, .toggle-switch').forEach(el => {
+                if (el.tagName === 'DIV' || el.tagName === 'BUTTON') el.style.pointerEvents = 'none';
+                else el.disabled = true;
+            });
+
+            document.querySelectorAll('.tracker-step').forEach(s => {
+                s.classList.remove('active', 'done');
+                s.querySelector('.step-indicator').innerHTML = s.id.split('-')[1];
+            });
+            document.getElementById('step-1-agent-text').innerText = "Waiting...";
+            document.getElementById('step-2-agent-text').innerText = "Waiting...";
+            document.getElementById('step-3-agent-text').innerText = "Waiting...";
+            document.getElementById('analysis-done-msg').classList.add('hidden');
+            document.getElementById('report-container').classList.add('hidden');
+            document.getElementById('results-placeholder').classList.remove('hidden');
+
+            setStepActive('step-1-agent', "Analyzing image on AMD MI300X GPU using Qwen2-VL-7B-Instruct...");
+
+            const formData = new FormData();
+            if (currentMainScanFile) {
+                formData.append('scan_image', currentMainScanFile);
+            }
+            if (currentPdfFile) {
+                formData.append('scan_document', currentPdfFile);
+            }
+            if (nameVal) formData.append('patient_name', nameVal);
+            if (ageVal) formData.append('age', ageVal);
+            if (genderVal) formData.append('gender', genderVal);
+            if (bloodVal !== 'Unknown') formData.append('blood_type', bloodVal);
+            if (scanTypeVal) formData.append('scan_type', scanTypeVal);
+            if (regionVal) formData.append('body_region', regionVal);
+            if (conditionsVal) formData.append('known_conditions', conditionsVal);
+            if (symptomsVal) formData.append('symptoms', symptomsVal);
+            formData.append('smoking', smokingVal);
+            formData.append('alcohol', alcoholVal);
+            formData.append('family_history', familyVal);
+
+            try {
+                // Wait 1 second before showing step 1 as done and activating step 2
+                setTimeout(() => {
+                    setStepDone('step-1-agent', "Agent 1 Processing — Extracting visual features...");
+                    setStepActive('step-2-agent', "Agent 2 Processing — Generating clinical report...");
+                }, 1000);
+                
+                // Activate step 3 shortly after
+                setTimeout(() => {
+                    setStepActive('step-3-agent', "Agent 3 Processing — Validating report...");
+                }, 1500);
+
+                const response = await fetch(`${API_BASE}/analyze`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update all steps with final results
+                    setStepDone('step-1-agent', "Agent 1 Complete — Visual features extracted via Qwen-VL on AMD MI300X");
+                    setStepDone('step-2-agent', "Agent 2 Complete — Clinical report generated");
+                    setStepDone('step-3-agent', `Agent 3 Complete — Report validated. Reliability: ${data.validation?.reliability_score || 0}/10`);
+                    
+                    document.getElementById('analysis-done-msg').classList.remove('hidden');
+
+                    const nav3 = document.getElementById('nav-step-3');
+                    nav3.classList.add('completed'); nav3.classList.remove('active');
+                    document.getElementById('nav-circle-3').innerHTML = "✓";
+
+                    const nav4 = document.getElementById('nav-step-4');
+                    nav4.classList.add('completed'); nav4.classList.remove('active');
+                    document.getElementById('nav-circle-4').innerHTML = "✓";
+
+                    populateReport(data);
+                    currentReportContext = JSON.stringify(data.report);
+                    showToast('success', 'Analysis complete');
+
+                } else {
+                    throw new Error(data.error || "Analysis failed");
+                }
+            } catch (err) {
+                showToast('error', `Analysis failed: ${err.message}`);
+                document.querySelectorAll('.tracker-step').forEach(s => s.classList.remove('active'));
+                document.getElementById('step-1-agent-text').innerText = "Failed";
+            } finally {
+                runBtn.disabled = false;
+                runBtn.innerHTML = 'Run Analysis';
+                runBtn.style.opacity = '1';
+                document.querySelectorAll('input, select, textarea, .segment-btn, .card-btn, .toggle-switch').forEach(el => {
+                    if (el.tagName === 'DIV' || el.tagName === 'BUTTON') el.style.pointerEvents = 'all';
+                    else el.disabled = false;
+                });
+            }
+        }
+
+        function populateReport(data) {
+            const r = data.report || {};
+            const v = data.validation || {};
+            const p = data.patient || {};
+
+            document.getElementById('rep-name').innerText = p.patient_name || '--';
+            document.getElementById('rep-age').innerText = p.age || '--';
+            document.getElementById('rep-gender').innerText = p.gender || '--';
+            document.getElementById('rep-blood').innerText = p.blood_type || '--';
+            document.getElementById('rep-smoking').innerText = p.smoking || '--';
+            document.getElementById('rep-alcohol').innerText = p.alcohol || '--';
+            document.getElementById('rep-family').innerText = p.family_history || '--';
+
+            document.getElementById('rep-image-type').innerText = `Image: ${r.image_type || '--'}`;
+            document.getElementById('rep-body-region').innerText = `Region: ${r.body_region || '--'}`;
+            document.getElementById('rep-image-quality').innerText = `Quality: ${r.image_quality || '--'}`;
+
+            const riskObj = r.cancer_risk || {};
+            const riskScoreTarget = riskObj.risk_score || 0;
+            document.getElementById('risk-level-badge').innerText = riskObj.risk_level ? riskObj.risk_level.toUpperCase() : '--';
+            document.getElementById('risk-stage-badge').innerText = riskObj.stage ? `STAGE: ${riskObj.stage.toUpperCase()}` : '--';
+            document.getElementById('risk-suspected-type').innerText = riskObj.suspected_type || '--';
+            document.getElementById('risk-reasoning').innerText = riskObj.reasoning || '--';
+
+            const lvl = (riskObj.risk_level || '').toLowerCase();
+            const badgeLvl = document.getElementById('risk-level-badge');
+            if (lvl.includes('high') || lvl.includes('critical')) { badgeLvl.className = 'rbadge rbadge-danger'; }
+            else if (lvl.includes('moderate')) { badgeLvl.className = 'rbadge rbadge-warning'; }
+            else { badgeLvl.className = 'rbadge rbadge-success'; }
+
+            const findingsHtml = (r.findings || []).map((f, i) => `
+            <div class="finding-card">
+                <b>${i + 1}. ${f.category || 'Observation'}:</b> ${f.description || ''}
+                <span style="opacity: 0.6; font-size: 0.8rem; margin-left: 8px;">(${f.severity || 'Unknown'})</span>
+            </div>
+        `).join('');
+            document.getElementById('findings-container').innerHTML = findingsHtml || '<p style="color:var(--text-3)">No specific findings reported.</p>';
+
+            const conditionsHtml = (r.conditions || []).map(c => {
+                let color = 'var(--accent)'; let confWidth = '30%';
+                if (c.confidence === 'high') { color = 'var(--danger)'; confWidth = '85%'; }
+                else if (c.confidence === 'medium') { color = 'var(--warning)'; confWidth = '60%'; }
+                return `
+            <div class="condition-card">
+                <div class="condition-name">${c.name || 'Unknown Condition'}</div>
+                <div class="confidence-bar"><div class="confidence-fill" style="width: ${confWidth}; background: ${color};"></div></div>
+                <div class="condition-note"><b>${c.confidence ? c.confidence.toUpperCase() : ''} Confidence.</b> ${c.reasoning || ''}</div>
+            </div>`;
+            }).join('');
+            document.getElementById('conditions-container').innerHTML = conditionsHtml || '<p style="color:var(--text-3)">No differential diagnosis available.</p>';
+
+            const stepsHtml = (r.next_steps || []).map((ns, i) => {
+                let urgClass = 'urgency-routine';
+                const urg = (ns.urgency || '').toLowerCase();
+                if (urg === 'urgent' || urg === 'immediate') urgClass = 'urgency-urgent';
+                else if (urg === 'soon') urgClass = 'urgency-soon';
+                return `
+            <div class="action-card">
+                <div class="action-num">${i + 1}</div>
+                <div class="action-body">
+                    <div class="action-name">${ns.action || ''}</div>
+                    <div class="action-reason">${ns.reason || ''}</div>
+                </div>
+                <span class="urgency-badge ${urgClass}">${ns.urgency || 'Routine'}</span>
+            </div>`;
+            }).join('');
+            document.getElementById('next-steps-container').innerHTML = stepsHtml || '<p style="color:var(--text-3)">No next steps recommended.</p>';
+
+            document.getElementById('validator-score-text').innerText = `Reliability: ${v.reliability_score || 0}/10`;
+            document.getElementById('validator-bar-fill').style.width = `${(v.reliability_score || 0) * 10}%`;
+
+            const vVerdict = (v.verdict || '').toLowerCase();
+            const vBadge = document.getElementById('validator-verdict');
+            vBadge.innerText = `VERDICT: ${v.verdict || '--'}`;
+            if (vVerdict.includes('pass') && !vVerdict.includes('warning')) { vBadge.className = 'vchip rbadge-success'; }
+            else if (vVerdict.includes('fail')) { vBadge.className = 'vchip rbadge-danger'; }
+            else { vBadge.className = 'vchip rbadge-warning'; }
+
+            document.getElementById('validator-note').innerText = v.validator_note || '--';
+
+            let flagsHtml = `<span class="vchip ${vBadge.className}">${vBadge.innerText}</span>`;
+            flagsHtml += `<span class="vchip" style="background: var(--bg); border-color: var(--border); color: var(--text-2);">${v.validator_note || '--'}</span>`;
+            (v.flags || []).forEach(f => {
+                flagsHtml += `<span class="vchip rbadge-warning">${f}</span>`;
+            });
+            document.getElementById('validator-flags-container').innerHTML = flagsHtml;
+
+            showReport(riskScoreTarget);
+        }
+
+        function showReport(targetScore) {
+            document.querySelector('.input-panel').style.display = 'none';
+            document.querySelector('.results-panel').style.display = 'block';
+
+            resultsPlaceholder.classList.add('hidden');
+            reportContainer.classList.remove('hidden');
+
+            setTimeout(() => {
+                const gaugeFill = document.getElementById('risk-gauge');
+                const scoreText = document.getElementById('risk-score');
+                let currentPercent = 0;
+                const animate = () => {
+                    if (currentPercent <= targetScore) {
+                        gaugeFill.style.background = `conic-gradient(var(--danger) ${currentPercent}%, transparent 0%)`;
+                        scoreText.innerText = Math.floor(currentPercent);
+                        currentPercent += 1.5;
+                        requestAnimationFrame(animate);
+                    } else {
+                        scoreText.innerText = targetScore;
+                        gaugeFill.style.background = `conic-gradient(var(--danger) ${targetScore}%, transparent 0%)`;
+                    }
+                };
+                requestAnimationFrame(animate);
+            }, 600);
+
+            setTimeout(() => {
+                reportContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function resetWizard() { goToStep(1); }
+
+        // CHATBOT
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+
+        function toggleChat() { toggleChatPanel(); }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addMessage(text, 'user');
+            chatInput.value = '';
+
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'msg ai';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            chatBody.appendChild(typingDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, report_context: currentReportContext })
+                });
+                const data = await response.json();
+                typingDiv.remove();
+                if (data.success) {
+                    addMessage(data.reply, 'ai');
+                } else {
+                    addMessage("Sorry, I am having trouble understanding. Error: " + data.error, 'ai');
+                }
+            } catch (err) {
+                typingDiv.remove();
+                addMessage("Sorry, I am having trouble connecting to the server. Please try again.", 'ai');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `msg ${sender}`;
+            div.innerText = text;
+            chatBody.appendChild(div);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('report-container');
+            const btn = document.getElementById('download-btn');
+            btn.style.display = 'none';
+            const opt = {
+                margin: 10,
+                filename: 'MediScan_Clinical_Report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(() => { btn.style.display = 'flex'; });
+        }
+    </script>
+
+</body>
+
+</html>

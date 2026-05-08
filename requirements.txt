@@ -1,0 +1,6 @@
+flask
+flask-cors
+python-dotenv
+google-genai
+Pillow
+requests
