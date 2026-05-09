@@ -21,7 +21,7 @@ client = genai.Client(
     location='us-central1'
 )
 
-VALIDATOR_PROMPT = """You are MediScan AI's Chief Medical Officer (Agent 3 - Validator).
+VALIDATOR_PROMPT = """You are CancerLens AI's Chief Medical Officer (Agent 3 - Validator).
 Your job is to independently review the AI-generated medical report for safety, consistency, and reliability before it is shown to the user.
 
 Review the JSON report provided and perform the following checks:

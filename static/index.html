@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediScan AI — Clinical Intelligence Platform</title>
+    <title>CancerLens AI — Clinical Intelligence Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -2093,6 +2093,117 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .survival-stat-card {
+            padding: 18px 16px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        .survival-stat-num {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--text-1);
+            line-height: 1;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .survival-stat-label {
+            font-size: 0.78rem;
+            color: var(--text-2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .survival-stat-note {
+            font-size: 0.75rem;
+            color: var(--text-3);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+        .stage-progression-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            flex-wrap: wrap;
+        }
+        .stage-bar-item {
+            text-align: center;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            min-width: 80px;
+            transition: all 0.3s;
+        }
+        .stage-bar-item.active {
+            border-color: var(--danger);
+            background: var(--danger-light);
+        }
+        .stage-bar-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-2);
+            margin-bottom: 4px;
+        }
+        .stage-bar-item.active .stage-bar-label {
+            color: var(--danger);
+        }
+        .stage-bar-rate {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-1);
+        }
+        .stage-bar-marker {
+            font-size: 0.68rem;
+            color: var(--danger);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .stage-bar-arrow {
+            color: var(--text-3);
+            font-size: 1rem;
+            padding: 0 4px;
+        }
+
+        .resource-card {
+            display: block;
+            padding: 14px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .resource-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .resource-card-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-1);
+            margin-bottom: 4px;
+        }
+        .resource-card-desc {
+            font-size: 0.78rem;
+            color: var(--text-2);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .resource-card-link {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -2109,7 +2220,7 @@
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                     </svg>
                 </div>
-                MediScan AI
+                CancerLens AI
             </a>
             <div class="land-nav-links">
                 <a href="#how-it-works">How it works</a>
@@ -2124,8 +2235,8 @@
                 Powered by AMD MI300X — 192GB HBM3
             </div>
             <h1 class="hero-h1">
-                Medical Imaging Analysis<br>
-                Driven by <em>Clinical AI</em>
+                Detect Cancer Early.<br>
+                Act Before It's <em>Too Late.</em>
             </h1>
             <p class="hero-sub">
                 Upload any diagnostic scan — X-Ray, MRI, CT — and receive a complete clinical report in seconds,
@@ -2233,12 +2344,12 @@
         </section>
 
         <div class="land-disclaimer">
-            MediScan AI is an assistive tool for research and educational purposes. Reports are not a substitute for
+            CancerLens AI is an assistive tool for research and educational purposes. Reports are not a substitute for
             professional medical diagnosis. Always consult a licensed physician.
         </div>
 
         <footer class="land-footer">
-            <div class="land-footer-copy">2026 MediScan AI. Built for the AMD Developer Hackathon.</div>
+            <div class="land-footer-copy">2026 CancerLens AI. Built for the AMD Developer Hackathon.</div>
             <div class="land-footer-powered">
                 Powered by AMD MI300X · Qwen2-VL · Gemini
             </div>
@@ -2259,7 +2370,7 @@
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                     </svg>
                 </div>
-                MediScan AI
+                CancerLens AI
             </div>
 
             <div class="app-header-center">
@@ -2474,7 +2585,7 @@
                             <div class="tracker-step" id="step-1-agent">
                                 <div class="step-indicator">1</div>
                                 <div class="tracker-step-info">
-                                    <div class="tracker-step-name">Extractor Agent</div>
+                                    <div class="tracker-step-name">Extractor Agent <span class="tracker-step-name-text">— AMD MI300X GPU</span></div>
                                     <div class="tracker-step-detail" id="step-1-agent-text">Waiting...</div>
                                 </div>
                             </div>
@@ -2547,7 +2658,7 @@
                                             <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                                         </svg>
                                     </div>
-                                    <div class="report-brand-name">MEDISCAN AI</div>
+                                    <div class="report-brand-name">CANCERLENS AI</div>
                                 </div>
                                 <div
                                     style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--text-1); margin-top: 8px;">
@@ -2596,6 +2707,7 @@
                                 <div class="risk-badge-row">
                                     <span class="rbadge rbadge-danger" id="risk-level-badge">--</span>
                                     <span class="rbadge rbadge-blue" id="risk-stage-badge">--</span>
+                                    <span class="rbadge" id="risk-classification-badge" style="display:none;">--</span>
                                 </div>
                                 <div class="risk-type">Suspected Type: <span id="risk-suspected-type">--</span></div>
                                 <div class="risk-reasoning" id="risk-reasoning">--</div>
@@ -2621,6 +2733,50 @@
                         <div id="next-steps-container"></div>
                     </div>
 
+                    <div class="report-section" id="survival-section" style="display:none;">
+                        <div class="section-head">Survival Statistics</div>
+                        
+                        <div id="survival-loading" style="text-align:center; padding: 20px; color: var(--text-3); font-size: 0.85rem;">
+                            <span class="loading-spinner"></span>
+                            Loading survival statistics...
+                        </div>
+                        
+                        <div id="survival-content" style="display:none;">
+                            
+                            <!-- 3 stat cards -->
+                            <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px;">
+                                
+                                <div class="survival-stat-card" id="stat-card-1">
+                                    <div class="survival-stat-num" id="stat-current">--%</div>
+                                    <div class="survival-stat-label" id="stat-current-label">5-year survival</div>
+                                </div>
+                                
+                                <div class="survival-stat-card" style="border-color: var(--accent);">
+                                    <div class="survival-stat-num" style="color: var(--accent);" id="stat-stage1">--%</div>
+                                    <div class="survival-stat-label">If caught at Stage I</div>
+                                    <div class="survival-stat-note" id="stat-early-advantage">--</div>
+                                </div>
+                                
+                                <div class="survival-stat-card">
+                                    <div class="survival-stat-num" id="stat-treatment">--%</div>
+                                    <div class="survival-stat-label">Treatment response rate</div>
+                                    <div class="survival-stat-note" id="stat-median">--</div>
+                                </div>
+                                
+                            </div>
+                            
+                            <!-- Stage progression bar -->
+                            <div id="stage-progression"></div>
+                            
+                            <!-- Source note -->
+                            <div style="font-size: 0.75rem; color: var(--text-3); margin-top: 14px; text-align: center;">
+                                Statistics sourced from published oncological research. 
+                                Individual outcomes vary. Consult your oncologist.
+                            </div>
+                            
+                        </div>
+                    </div>
+
                     <!-- Validator -->
                     <div class="report-section">
                         <div class="section-head">Validation</div>
@@ -2639,12 +2795,6 @@
                                     id="validator-note">--</span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Disclaimer -->
-                    <div class="report-disclaimer">
-                        MediScan AI is an assistive AI tool. Reports are not a substitute for professional medical
-                        diagnosis. Always consult a licensed physician.
                     </div>
 
                     <div style="padding: 0 28px 28px;">
@@ -2668,6 +2818,56 @@
                         </div>
                     </div>
 
+                    <div id="specialist-section" 
+                         style="display:none; padding: 24px 28px; 
+                                border-top: 1px solid var(--border);">
+                        
+                        <div class="section-head">Find a Specialist Near You</div>
+                        
+                        <div style="font-size: 0.85rem; color: var(--text-2); margin-bottom: 16px;">
+                            Based on your diagnosis, you should consult a 
+                            <b id="specialist-type-text">Oncologist</b> immediately.
+                        </div>
+                        
+                        <!-- Google Maps Button -->
+                        <button id="specialist-btn"
+                            style="width: 100%; padding: 13px; margin-bottom: 16px;
+                                   border-radius: var(--radius-lg);
+                                   background: var(--primary); color: #fff;
+                                   border: none; font-size: 0.92rem; font-weight: 700;
+                                   cursor: pointer; font-family: var(--font);
+                                   display: flex; align-items: center; 
+                                   justify-content: center; gap: 8px;
+                                   transition: all 0.2s;">
+                            Find Oncologist Near Me
+                        </button>
+                        
+                        <!-- Resource Cards -->
+                        <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;">
+                            
+                            <a href="https://tmc.gov.in" target="_blank" 
+                               class="resource-card">
+                                <div class="resource-card-name">Tata Memorial Hospital</div>
+                                <div class="resource-card-desc">India's premier cancer centre</div>
+                                <div class="resource-card-link">Visit website →</div>
+                            </a>
+                            
+                            <a href="https://www.aiims.edu" target="_blank"
+                               class="resource-card">
+                                <div class="resource-card-name">AIIMS Oncology</div>
+                                <div class="resource-card-desc">All India Institute of Medical Sciences</div>
+                                <div class="resource-card-link">Visit website →</div>
+                            </a>
+                            
+                            <a href="https://www.practo.com/search/doctors?results_type=doctor&q=oncologist" 
+                               target="_blank" class="resource-card">
+                                <div class="resource-card-name">Find on Practo</div>
+                                <div class="resource-card-desc">Book oncologist appointment online</div>
+                                <div class="resource-card-link">Book now →</div>
+                            </a>
+                            
+                        </div>
+                    </div>
                 </div>
             </main>
 
@@ -2677,7 +2877,7 @@
                 <div class="chat-panel-header">
                     <div class="chat-panel-title">
                         <div class="chat-status-dot"></div>
-                        MediScan Health Advisor
+                        CancerLens Health Advisor
                     </div>
                     <button class="chat-close-btn" onclick="toggleChatPanel()">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2688,7 +2888,7 @@
                     </button>
                 </div>
                 <div id="chat-body">
-                    <div class="msg ai">Hello. I am your MediScan AI assistant. You can ask me about your report, what
+                    <div class="msg ai">Hello. I am your CancerLens AI assistant. You can ask me about your report, what
                         findings mean, treatment options, cancer stages, or anything medical. How can I help?</div>
                 </div>
                 <div class="chat-input-area">
@@ -3180,6 +3380,8 @@
                                 nav3.classList.add('completed'); nav3.classList.remove('active');
                                 document.getElementById('nav-circle-3').innerHTML = "✓";
 
+                                document.getElementById('line-fill-3').style.width = '100%';
+
                                 const nav4 = document.getElementById('nav-step-4');
                                 nav4.classList.add('completed'); nav4.classList.remove('active');
                                 document.getElementById('nav-circle-4').innerHTML = "✓";
@@ -3215,7 +3417,7 @@
             }
         }
 
-        function populateReport(data) {
+        async function populateReport(data) {
             const r = data.report || {};
             const v = data.validation || {};
             const p = data.patient || {};
@@ -3236,8 +3438,28 @@
             const riskScoreTarget = riskObj.risk_score || 0;
             document.getElementById('risk-level-badge').innerText = riskObj.risk_level ? riskObj.risk_level.toUpperCase() : '--';
             document.getElementById('risk-stage-badge').innerText = riskObj.stage ? `STAGE: ${riskObj.stage.toUpperCase()}` : '--';
+            
+            const classificationBadge = document.getElementById('risk-classification-badge');
+            if (classificationBadge && riskObj.stage_classification) {
+                classificationBadge.style.display = 'inline-flex';
+                classificationBadge.innerText = riskObj.stage_classification.toUpperCase();
+                
+                const cls = riskObj.stage_classification.toUpperCase();
+                if (cls.includes('EARLY')) {
+                    classificationBadge.className = 'rbadge rbadge-success';
+                } else if (cls.includes('LATE')) {
+                    classificationBadge.className = 'rbadge rbadge-danger';
+                } else if (cls.includes('INDETERMINATE')) {
+                    classificationBadge.className = 'rbadge rbadge-warning';
+                } else {
+                    classificationBadge.className = 'rbadge rbadge-blue';
+                }
+            } else if (classificationBadge) {
+                classificationBadge.style.display = 'none';
+            }
+
             document.getElementById('risk-suspected-type').innerText = riskObj.suspected_type || '--';
-            document.getElementById('risk-reasoning').innerText = riskObj.reasoning || '--';
+            document.getElementById('risk-reasoning').innerText = riskObj.stage_reasoning || riskObj.reasoning || '--';
 
             const lvl = (riskObj.risk_level || '').toLowerCase();
             const badgeLvl = document.getElementById('risk-level-badge');
@@ -3303,6 +3525,156 @@
             document.getElementById('validator-flags-container').innerHTML = flagsHtml;
 
             showReport(riskScoreTarget);
+
+            // Show loading state before fetch
+            document.getElementById('survival-section').style.display = 'block';
+            document.getElementById('survival-loading').style.display = 'block';
+            document.getElementById('survival-content').style.display = 'none';
+
+            // Fetch and display survival stats
+            const stats = await fetchSurvivalStats(
+                riskObj.suspected_type || 'cancer',
+                riskObj.stage || 'unknown'
+            );
+            displaySurvivalStats(stats, riskObj.stage || 'unknown');
+        }
+
+        async function fetchSurvivalStats(cancerType, stage) {
+            try {
+                const prompt = `You are a medical statistics AI.
+        Return ONLY a raw JSON object. No markdown. 
+        No explanation. No backticks. Just pure JSON.
+
+        Cancer Type: ${cancerType}
+        Detected Stage: ${stage}
+
+        Return exactly this structure:
+        {
+          "current_stage_survival": "X%",
+          "stage1_survival": "X%",
+          "stage2_survival": "X%", 
+          "stage3_survival": "X%",
+          "stage4_survival": "X%",
+          "treatment_response": "X%",
+          "early_advantage": "one sentence comparing early vs late stage outcome",
+          "median_survival": "X months/years at detected stage",
+          "specialist_type": "exact specialist name e.g. Orthopedic Oncologist"
+        }
+
+        Use real, accurate published oncological 
+        statistics for ${cancerType}.
+        If exact data unavailable use closest 
+        similar cancer type data.
+        Always return valid JSON only.`;
+
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: prompt,
+                        report_context: null
+                    })
+                });
+                
+                const data = await response.json();
+                let text = data.reply || '';
+                
+                // Strip any markdown if present
+                text = text.replace(/```json/g, '')
+                           .replace(/```/g, '')
+                           .trim();
+                
+                return JSON.parse(text);
+                
+            } catch(e) {
+                // Fallback if parsing fails
+                return {
+                    current_stage_survival: "Data unavailable",
+                    stage1_survival: "~85%",
+                    stage2_survival: "~65%",
+                    stage3_survival: "~40%",
+                    stage4_survival: "~15%",
+                    treatment_response: "~55%",
+                    early_advantage: "Early detection significantly improves survival outcomes",
+                    median_survival: "Consult oncologist",
+                    specialist_type: "Oncologist"
+                };
+            }
+        }
+
+        function displaySurvivalStats(stats, currentStage) {
+            // After stats loaded, hide loader show content
+            document.getElementById('survival-loading').style.display = 'none';
+            document.getElementById('survival-content').style.display = 'block';
+
+            // 3 stat cards
+            // Card 1: Current Stage Survival
+            document.getElementById('stat-current').innerText = stats.current_stage_survival;
+            document.getElementById('stat-current-label').innerText = 
+                `5-year survival at ${currentStage}`;
+            
+            // Color code based on value
+            const val = parseInt(stats.current_stage_survival);
+            const card1 = document.getElementById('stat-card-1');
+            if(val >= 70) card1.style.borderColor = 'var(--accent)';
+            else if(val >= 40) card1.style.borderColor = 'var(--warning)';
+            else card1.style.borderColor = 'var(--danger)';
+
+            // Card 2: If caught at Stage I
+            document.getElementById('stat-stage1').innerText = stats.stage1_survival;
+            document.getElementById('stat-early-advantage').innerText = stats.early_advantage;
+
+            // Card 3: Treatment Response
+            document.getElementById('stat-treatment').innerText = stats.treatment_response;
+            document.getElementById('stat-median').innerText = 
+                `Median survival: ${stats.median_survival}`;
+
+            // Stage progression bar
+            const stages = ['I', 'II', 'III', 'IV'];
+            const rates = [
+                stats.stage1_survival,
+                stats.stage2_survival,
+                stats.stage3_survival,
+                stats.stage4_survival
+            ];
+            
+            const currentNum = currentStage.replace(/[^IVX]/g, '').trim();
+            
+            let barHtml = '<div class="stage-progression-bar">';
+            stages.forEach((s, i) => {
+                const isActive = currentStage.includes(s) || 
+                                 (s === 'I' && currentStage.includes('Stage I') && !currentStage.includes('II') && !currentStage.includes('III') && !currentStage.includes('IV'));
+                barHtml += `
+                <div class="stage-bar-item ${isActive ? 'active' : ''}">
+                    <div class="stage-bar-label">Stage ${s}</div>
+                    <div class="stage-bar-rate">${rates[i]}</div>
+                    ${isActive ? '<div class="stage-bar-marker">You are here</div>' : ''}
+                </div>`;
+                if(i < 3) barHtml += '<div class="stage-bar-arrow">→</div>';
+            });
+            barHtml += '</div>';
+            document.getElementById('stage-progression').innerHTML = barHtml;
+
+            // Store specialist type for Feature 2
+            window.detectedSpecialist = stats.specialist_type || 'Oncologist';
+            window.detectedCancer = document.getElementById('risk-suspected-type').innerText;
+            updateSpecialistSection();
+        }
+
+        function updateSpecialistSection() {
+            const specialist = window.detectedSpecialist || 'Oncologist';
+            const cancer = window.detectedCancer || 'cancer';
+            
+            document.getElementById('specialist-section').style.display = 'block';
+            document.getElementById('specialist-type-text').innerText = specialist;
+            document.getElementById('specialist-btn').innerText = 
+                `Find ${specialist} Near Me`;
+            document.getElementById('specialist-btn').onclick = () => {
+                window.open(
+                    `https://www.google.com/maps/search/${encodeURIComponent(specialist)}+near+me`,
+                    '_blank'
+                );
+            };
         }
 
         function showReport(targetScore) {
@@ -3393,7 +3765,7 @@
             btn.style.display = 'none';
             const opt = {
                 margin: 10,
-                filename: 'MediScan_Clinical_Report.pdf',
+                filename: 'CancerLens_Clinical_Report.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }

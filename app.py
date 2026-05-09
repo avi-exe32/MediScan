@@ -1,5 +1,5 @@
 """
-MediScan AI - Flask Backend
+CancerLens AI - Flask Backend
 Main application server with REST API endpoints for medical scan analysis.
 """
 
@@ -81,7 +81,7 @@ def triage():
             
         symptoms = data['symptoms']
         
-        prompt = f"""You are MediScan AI Multi-Modal Triage System powered by Gemini 2.0 Flash.
+        prompt = f"""You are CancerLens AI Multi-Modal Triage System powered by Gemini 2.0 Flash.
 
 Analyze the patient's symptoms and determine:
 1. The suspected medical category (Hematology, Oncology, Cardiology, Pulmonology, Dermatology, etc.)
@@ -287,7 +287,7 @@ def chat():
         report_context = data.get('report_context', '')
         
         # Build the chat prompt
-        system_prompt = """You are MediScan AI, a compassionate and knowledgeable medical assistant. Your role is to help patients understand their medical reports in a clear, detailed, and empathetic way.
+        system_prompt = """You are CancerLens AI, a compassionate and knowledgeable medical assistant. Your role is to help patients understand their medical reports in a clear, detailed, and empathetic way.
 
 Guidelines:
 1. BE DETAILED AND THOROUGH: Provide comprehensive explanations that help users truly understand their condition. Don't be overly brief - patients deserve complete information.
