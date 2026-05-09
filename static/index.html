@@ -2466,6 +2466,9 @@
                         <!-- Dynamic Upload Zones -->
                         <!-- Category A: Blood Work / Pathology (PDF) -->
                         <div id="upload-zone-A" style="display: none;">
+                            <div style="text-align: right; margin-bottom: 8px;">
+                                <button type="button" onclick="downloadSampleReports(event)" class="btn-outline" style="font-size: 0.8rem; padding: 6px 12px;">Download Sample Report</button>
+                            </div>
                             <div class="upload-zone" id="pdf-zone" onclick="document.getElementById('pdf-input').click()">
                                 <div id="pdf-idle">
                                     <div class="upload-icon" style="width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 12px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center;">
@@ -2487,6 +2490,9 @@
 
                         <!-- Category B & C: Imaging Scan / Physical Photo (Image) -->
                         <div id="upload-zone-B" style="display: none;">
+                            <div style="text-align: right; margin-bottom: 8px; margin-top: 16px;">
+                                <button type="button" onclick="downloadSampleXrays(event)" class="btn-outline" style="font-size: 0.8rem; padding: 6px 12px;">Download Sample Xray</button>
+                            </div>
                             <div class="upload-zone" id="main-scan-zone" onclick="document.getElementById('main-scan-input').click()">
                                 <div id="main-scan-idle">
                                     <div class="upload-icon" style="width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 12px; background: var(--bg-alt); display: flex; align-items: center; justify-content: center;">
@@ -3225,6 +3231,36 @@
             document.getElementById('pdf-preview').style.display = 'block';
             pdfZone.classList.add('uploaded');
         }
+        function downloadSampleReports(e) {
+            if(e) e.stopPropagation();
+            const a1 = document.createElement('a');
+            a1.href = '/static/reports/early_stage_blood_report.pdf';
+            a1.download = 'early_stage_blood_report.pdf';
+            a1.click();
+            
+            setTimeout(() => {
+                const a2 = document.createElement('a');
+                a2.href = '/static/reports/late_stage_blood_report.pdf';
+                a2.download = 'late_stage_blood_report.pdf';
+                a2.click();
+            }, 500);
+        }
+
+        function downloadSampleXrays(e) {
+            if(e) e.stopPropagation();
+            const a1 = document.createElement('a');
+            a1.href = '/static/reports/early_stage_xray.jpg';
+            a1.download = 'early_stage_xray.jpg';
+            a1.click();
+            
+            setTimeout(() => {
+                const a2 = document.createElement('a');
+                a2.href = '/static/reports/late_stage_xray.jpg';
+                a2.download = 'late_stage_xray.jpg';
+                a2.click();
+            }, 500);
+        }
+
         function removePdf() {
             pdfInput.value = ""; currentPdfFile = null;
             document.getElementById('pdf-idle').style.display = 'block';
